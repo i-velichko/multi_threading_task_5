@@ -4,8 +4,8 @@ import com.epam.fifthtask.entity.type.TerminalStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,7 +14,7 @@ public class Base {
 
     private final static Logger LOGGER = LogManager.getLogger();
     private static Base instance = new Base();
-    private List<Terminal> terminals = new ArrayList<>();
+    private List<Terminal> terminals = new CopyOnWriteArrayList<>();
     private Semaphore normalQueue = new Semaphore(3);
     private Lock lock = new ReentrantLock();
 
