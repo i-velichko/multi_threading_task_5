@@ -1,16 +1,21 @@
 package com.epam.fifthtask.entity;
 
 import com.epam.fifthtask.entity.type.WagonStatus;
-import com.epam.fifthtask.warehouse.WagonContainer;
+import com.epam.fifthtask.exception.LogisticBaseException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
-public class Wagon implements Callable<Boolean> {
+public class Wagon implements Runnable {
+    private final static Logger LOGGER = LogManager.getLogger();
     private WagonStatus status;
     private WagonContainer wagonContainer;
+    private String name;
 
-    public Wagon(WagonContainer wagonContainer) {
+    public Wagon(WagonContainer wagonContainer, String name) {
+        this.name = name;
         this.status = WagonStatus.FULL;
         this.wagonContainer = wagonContainer;
     }
@@ -32,14 +37,19 @@ public class Wagon implements Callable<Boolean> {
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public void run()  {
+        LOGGER.log(Level.INFO, "This wagon ID = " + name + " Thread ID:" +Thread.currentThread().getId());
         LogisticBase logisticBase = LogisticBase.getInstance();
-        System.out.println("Выгружаю контейнер");
-        logisticBase.testTerminal(this);
+        try {
+            Terminal terminal = logisticBase.chooseTerminal(this);
+            terminal.unloadingWagon(this);
+            LOGGER.log(Level.INFO, "Unloading container finished wagon:" + name);
+        } catch (Exception e) {
+            LOGGER.error("Wagon.error " + e.getMessage());
+        }
+    }
 
-
-
-//        TimeUnit.SECONDS.sleep(5);
-        return false;
+    public String getName() {
+        return name;
     }
 }
