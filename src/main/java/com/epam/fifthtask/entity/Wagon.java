@@ -1,14 +1,55 @@
 package com.epam.fifthtask.entity;
 
+import com.epam.fifthtask.entity.type.WagonStatus;
+import com.epam.fifthtask.exception.LogisticBaseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+
 public class Wagon implements Runnable {
     private final static Logger LOGGER = LogManager.getLogger();
+    private WagonStatus status;
+    private WagonContainer wagonContainer;
     private String name;
 
-    public Wagon(int i) {
-        this.name = "Wagon-" + i;
+
+
+    public Wagon(WagonContainer wagonContainer, String name) {
+        this.name = name;
+        this.status = WagonStatus.FULL;
+        this.wagonContainer = wagonContainer;
+    }
+
+    public WagonContainer getWagonContainer() {
+        return wagonContainer;
+    }
+
+    public void setWagonContainer(WagonContainer wagonContainer) {
+        this.wagonContainer = wagonContainer;
+    }
+
+    public WagonStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(WagonStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public void run()  {
+        LogisticBase logisticBase = LogisticBase.getInstance();
+        try {
+            Terminal terminal = logisticBase.chooseTerminal(this);
+            LOGGER.log(Level.INFO, "" + this + " got " + terminal);
+            terminal.unloadingWagon(this);
+        } catch (Exception e) {
+            LOGGER.error("Wagon.error " + e.getMessage());
+        }
     }
 
     public String getName() {
@@ -16,19 +57,12 @@ public class Wagon implements Runnable {
     }
 
     @Override
-    public void run() {
-        Base base = Base.getInstance();
-        Terminal terminal = base.askForTerminal();
-        LOGGER.info("" + this + " Got " + terminal);
-        terminal.unload(this);
-
-    }
-
-    @Override
     public String toString() {
-        return "Wagon{" +
-                "name='" + name + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("Wagon: ");
+        sb.append("status=").append(status);
+        sb.append(", wagonContainer=").append(wagonContainer);
+        sb.append(", name= '").append(name).append('\'');
+        sb.append('.');
+        return sb.toString();
     }
 }
-
