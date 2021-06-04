@@ -24,6 +24,22 @@ public class Wagon implements Runnable {
         this.wagonContainer = wagonContainer;
     }
 
+    @Override
+    public void run()  {
+        LogisticBase logisticBase = LogisticBase.getInstance();
+        try {
+            Terminal terminal = logisticBase.chooseTerminal(this);
+            LOGGER.log(Level.INFO, "" + this + " got " + terminal);
+            terminal.unloadingWagon(this);
+        } catch (Exception e) {
+            LOGGER.error("Wagon.error " + e.getMessage());
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public WagonContainer getWagonContainer() {
         return wagonContainer;
     }
@@ -41,19 +57,31 @@ public class Wagon implements Runnable {
     }
 
     @Override
-    public void run()  {
-        LogisticBase logisticBase = LogisticBase.getInstance();
-        try {
-            Terminal terminal = logisticBase.chooseTerminal(this);
-            LOGGER.log(Level.INFO, "" + this + " got " + terminal);
-            terminal.unloadingWagon(this);
-        } catch (Exception e) {
-            LOGGER.error("Wagon.error " + e.getMessage());
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Wagon wagon = (Wagon) o;
+
+        if (getStatus() != wagon.getStatus()) {
+            return false;
+        }
+        if (getWagonContainer() != null ? !getWagonContainer().equals(wagon.getWagonContainer()) : wagon.getWagonContainer() != null) {
+            return false;
+        }
+        return getName() != null ? getName().equals(wagon.getName()) : wagon.getName() == null;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public int hashCode() {
+        int result = getStatus() != null ? getStatus().hashCode() : 0;
+        result = 31 * result + (getWagonContainer() != null ? getWagonContainer().hashCode() : 0);
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        return result;
     }
 
     @Override

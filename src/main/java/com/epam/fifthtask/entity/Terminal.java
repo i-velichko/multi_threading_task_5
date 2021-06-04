@@ -22,7 +22,7 @@ public class Terminal {
     private final Semaphore queue;
     private final Lock lock = new ReentrantLock();
 
-    public Terminal(String name,ProductsPriority priority, Semaphore normalQueue) {
+    public Terminal(String name, ProductsPriority priority, Semaphore normalQueue) {
         this.name = name;
         this.queue = normalQueue;
         this.productsPriority = priority;
@@ -47,7 +47,7 @@ public class Terminal {
             terminalStatus = TerminalStatus.READY;
         } catch (InterruptedException e) {
             throw new LogisticBaseException("Something wrong in waiting for unload wagon..." + wagon.getName());
-        }finally {
+        } finally {
             lock.unlock();
         }
         queue.release();

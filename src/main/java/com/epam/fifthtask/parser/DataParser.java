@@ -12,12 +12,12 @@ public class DataParser {
             throw new LogisticBaseException("Line for parsing is null.");
         }
         int wagonData;
-            try {
-                wagonData = Integer.parseInt(dataLine);
-            } catch (NumberFormatException e) {
-                LOGGER.error("This data can not be a parse." + e.getMessage());
-                throw new LogisticBaseException();
-            }
+        try {
+            wagonData = Integer.parseInt(dataLine);
+        } catch (NumberFormatException e) {
+            LOGGER.error("This data can not be a parse." + e.getMessage());
+            throw new LogisticBaseException();
+        }
         return wagonData;
     }
 

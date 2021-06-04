@@ -24,4 +24,11 @@ public class Warehouse {
     public int getMaxWarehouseSize() {
         return MAX_WAREHOUSE_SIZE;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Warehouse{");
+        sb.append('}');
+        return sb.toString();
+    }
 }

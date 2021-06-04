@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     private final static Logger LOGGER = LogManager.getLogger();
+
     public static void main(String[] args) throws ExecutionException, InterruptedException, LogisticBaseException {
 
         DataFileReader dataFileReader = new DataFileReader();
@@ -29,9 +30,6 @@ public class Main {
             wagonData[i] = data;
         }
 
-        System.out.println(Arrays.toString(wagonData));
-
-
         LOGGER.log(Level.INFO, "Starting work. ");
         ExecutorService service = Executors.newFixedThreadPool(8);
 
@@ -41,7 +39,7 @@ public class Main {
             service.submit(wagon);
         }
 
-        TimeUnit.MINUTES.sleep(5);
+        TimeUnit.MINUTES.sleep(1);
         service.shutdown();
 
         LOGGER.log(Level.INFO, "End of the working day ");
