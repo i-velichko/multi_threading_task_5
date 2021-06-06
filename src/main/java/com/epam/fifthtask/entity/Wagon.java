@@ -6,17 +6,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-
 public class Wagon implements Runnable {
-    private final static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private WagonStatus status;
     private WagonContainer wagonContainer;
-    private String name;
-
-
+    private final String name;
 
     public Wagon(WagonContainer wagonContainer, String name) {
         this.name = name;
@@ -25,13 +19,13 @@ public class Wagon implements Runnable {
     }
 
     @Override
-    public void run()  {
+    public void run() {
         LogisticBase logisticBase = LogisticBase.getInstance();
         try {
             Terminal terminal = logisticBase.chooseTerminal(this);
             LOGGER.log(Level.INFO, "" + this + " got " + terminal);
             terminal.unloadingWagon(this);
-        } catch (Exception e) {
+        } catch (LogisticBaseException e) {
             LOGGER.error("Wagon.error " + e.getMessage());
         }
     }

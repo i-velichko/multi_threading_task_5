@@ -1,6 +1,6 @@
 package com.epam.fifthtask.exception;
 
-public class LogisticBaseException extends Exception{
+public class LogisticBaseException extends Exception {
 
     public LogisticBaseException() {
         super();

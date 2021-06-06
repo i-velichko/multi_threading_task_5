@@ -14,6 +14,10 @@ public class WagonContainer {
 
     }
 
+    public WagonContainer(ContainerContent content) {
+        this.content = content;
+    }
+
     public ContainerContent getContent() {
         return content;
     }

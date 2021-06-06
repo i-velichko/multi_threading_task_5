@@ -4,8 +4,6 @@ import com.epam.fifthtask.entity.type.ContainerContent;
 import com.epam.fifthtask.entity.type.ProductsPriority;
 import com.epam.fifthtask.entity.type.TerminalStatus;
 import com.epam.fifthtask.exception.LogisticBaseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,7 +12,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LogisticBase {
-    private final static Logger LOGGER = LogManager.getLogger();
     private final List<Terminal> terminals = new CopyOnWriteArrayList<>();
     private final Lock lock = new ReentrantLock();
     private final Semaphore normalQueue = new Semaphore(3);
@@ -26,19 +23,10 @@ public class LogisticBase {
         terminals.add(new Terminal("Terminal C", ProductsPriority.NORMAL_PRIORITY, normalQueue));
         terminals.add(new Terminal("Terminal D", ProductsPriority.HIGH_PRIORITY, priorityQueue));
         terminals.add(new Terminal("Terminal E", ProductsPriority.HIGH_PRIORITY, priorityQueue));
-
     }
 
     private static class LogisticBaseHolder {
         public static final LogisticBase HOLDER_INSTANCE = new LogisticBase();
-    }
-
-    public static LogisticBase getInstance() {
-        return LogisticBaseHolder.HOLDER_INSTANCE;
-    }
-
-    public List<Terminal> getTerminals() {
-        return terminals;
     }
 
     public Terminal chooseTerminal(Wagon wagon) throws LogisticBaseException {
@@ -67,6 +55,14 @@ public class LogisticBase {
         } finally {
             lock.unlock();
         }
+    }
+
+    public static LogisticBase getInstance() {
+        return LogisticBaseHolder.HOLDER_INSTANCE;
+    }
+
+    public List<Terminal> getTerminals() {
+        return terminals;
     }
 
     @Override

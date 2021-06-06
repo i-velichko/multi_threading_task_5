@@ -15,8 +15,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Terminal {
-    private final static Logger LOGGER = LogManager.getLogger();
-    private String name;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private final String name;
     private TerminalStatus terminalStatus = TerminalStatus.READY;
     private final ProductsPriority productsPriority;
     private final Semaphore queue;
@@ -53,14 +53,6 @@ public class Terminal {
         queue.release();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public TerminalStatus getTerminalStatus() {
         return terminalStatus;
     }
@@ -71,6 +63,34 @@ public class Terminal {
 
     public ProductsPriority getProductsPriority() {
         return productsPriority;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Terminal terminal = (Terminal) o;
+
+        if (name != null ? !name.equals(terminal.name) : terminal.name != null) {
+            return false;
+        }
+        if (getTerminalStatus() != terminal.getTerminalStatus()) {
+            return false;
+        }
+        return getProductsPriority() == terminal.getProductsPriority();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (getTerminalStatus() != null ? getTerminalStatus().hashCode() : 0);
+        result = 31 * result + (getProductsPriority() != null ? getProductsPriority().hashCode() : 0);
+        return result;
     }
 
     @Override
